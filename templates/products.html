@@ -1,0 +1,371 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Shop - AgriTrade Africa{% endblock %}
+
+{% block extra_css %}
+<!-- Google Web Fonts -->
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Roboto:wght@500;700&display=swap" rel="stylesheet">
+
+<!-- Icon Font Stylesheet -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+<!-- Template Stylesheet -->
+<link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+<style>
+.product-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.product-image {
+    height: 250px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-image {
+    transform: scale(1.05);
+}
+
+.price-original {
+    text-decoration: line-through;
+    color: #6c757d;
+}
+
+.price-discount {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.badge-discount {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #dc3545;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+}
+
+.filter-sidebar {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.category-filter {
+    cursor: pointer;
+    padding: 10px 15px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.category-filter:hover {
+    background: #e9ecef;
+}
+
+.category-filter.active {
+    background: #34AD54;
+    color: white;
+}
+
+.sort-dropdown {
+    border-radius: 25px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="container-fluid bg-primary py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h1 class="display-4 text-white mb-3">Our Products</h1>
+                <p class="text-white lead">Fresh & Organic Products from African Farms</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="py-3">
+    <div class="container">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Products</li>
+        </ol>
+    </div>
+</nav>
+
+<!-- Products Section -->
+<div class="container py-5">
+    <div class="row">
+        <!-- Sidebar Filters -->
+        <div class="col-lg-3 mb-4">
+            <div class="filter-sidebar">
+                <h5 class="mb-4">Filter Products</h5>
+                
+                <!-- Category Filter -->
+                <div class="mb-4">
+                    <h6 class="mb-3">Categories</h6>
+                    <div class="category-filter {% if not request.GET.category %}active{% endif %}" onclick="filterByCategory('')">
+                        <i class="bi bi-grid me-2"></i>All Products
+                        <span class="badge bg-secondary ms-auto">{{ total_products }}</span>
+                    </div>
+                    {% for category_code, category_name in categories %}
+                    <div class="category-filter {% if request.GET.category == category_code %}active{% endif %}" onclick="filterByCategory('{{ category_code }}')">
+                        <i class="bi bi-tag me-2"></i>{{ category_name|title }}
+                        <span class="badge bg-secondary ms-auto">{{ category_counts|default_if_none:0 }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Price Filter -->
+                <div class="mb-4">
+                    <h6 class="mb-3">Price Range</h6>
+                    <form method="get" id="priceForm">
+                        {% if request.GET.category %}
+                            <input type="hidden" name="category" value="{{ request.GET.category }}">
+                        {% endif %}
+                        {% if request.GET.sort %}
+                            <input type="hidden" name="sort" value="{{ request.GET.sort }}">
+                        {% endif %}
+                        <div class="row">
+                            <div class="col-6">
+                                <input type="number" class="form-control" name="min_price" placeholder="Min" value="{{ request.GET.min_price }}">
+                            </div>
+                            <div class="col-6">
+                                <input type="number" class="form-control" name="max_price" placeholder="Max" value="{{ request.GET.max_price }}">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm mt-2 w-100">Apply</button>
+                    </form>
+                </div>
+
+                <!-- Quick Filters -->
+                <div class="mb-4">
+                    <h6 class="mb-3">Quick Filters</h6>
+                    <div class="d-grid gap-2">
+                        <a href="?discount=true{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}" 
+                           class="btn btn-outline-danger btn-sm {% if request.GET.discount %}active{% endif %}">
+                            <i class="bi bi-percent me-1"></i>On Sale
+                        </a>
+                        <a href="?featured=true{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}" 
+                           class="btn btn-outline-success btn-sm {% if request.GET.featured %}active{% endif %}">
+                            <i class="bi bi-star me-1"></i>Featured
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="col-lg-9">
+            <!-- Sort and View Options -->
+            <div class="row mb-4 align-items-center">
+                <div class="col-md-6">
+                    <p class="mb-0 text-muted">
+                        Showing {{ products.start_index }}-{{ products.end_index }} of {{ products.paginator.count }} products
+                        {% if request.GET.category %}
+                            in {{ request.GET.category|title }} category
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex justify-content-end">
+                        <select class="form-select sort-dropdown" style="width: auto;" onchange="sortProducts(this.value)">
+                            <option value="">Sort by</option>
+                            <option value="title" {% if request.GET.sort == 'title' %}selected{% endif %}>Name (A-Z)</option>
+                            <option value="-title" {% if request.GET.sort == '-title' %}selected{% endif %}>Name (Z-A)</option>
+                            <option value="price" {% if request.GET.sort == 'price' %}selected{% endif %}>Price (Low to High)</option>
+                            <option value="-price" {% if request.GET.sort == '-price' %}selected{% endif %}>Price (High to Low)</option>
+                            <option value="-id" {% if request.GET.sort == '-id' %}selected{% endif %}>Newest First</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Grid -->
+            <div class="row">
+                {% for product in products %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card product-card h-100">
+                        <div class="position-relative">
+                            <a href="{{ product.get_absolute_url }}">
+                                {% if product.image %}
+                                    <img src="{{ product.image.url }}" class="card-img-top product-image" alt="{{ product.title }}">
+                                {% else %}
+                                    <img src="{% static 'img/product-placeholder.jpg' %}" class="card-img-top product-image" alt="{{ product.title }}">
+                                {% endif %}
+                            </a>
+                            
+                            <!-- Discount Badge -->
+                            {% if product.discount_price %}
+                                {% widthratio product.price|floatformat:0|add:0 product.discount_price|floatformat:0|add:0 100 as discount_percent %}
+                                {% widthratio 100 1 discount_percent as actual_discount %}
+                                <span class="badge-discount">{{ actual_discount|floatformat:0 }}% OFF</span>
+                            {% endif %}
+
+                            <!-- Label Badge -->
+                            {% if product.label %}
+                                <span class="badge position-absolute" style="top: 10px; left: 10px; 
+                                    {% if product.label == 'P' %}background-color: #007bff;
+                                    {% elif product.label == 'S' %}background-color: #6c757d;
+                                    {% elif product.label == 'D' %}background-color: #dc3545;
+                                    {% endif %}">
+                                    {{ product.get_label_display }}
+                                </span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="card-body d-flex flex-column">
+                            <div class="mb-2">
+                                <span class="badge bg-light text-dark">{{ product.get_category_display }}</span>
+                            </div>
+                            
+                            <h6 class="card-title">
+                                <a href="{{ product.get_absolute_url }}" class="text-decoration-none text-dark">
+                                    {{ product.title }}
+                                </a>
+                            </h6>
+                            
+                            <p class="card-text text-muted small flex-grow-1">
+                                {{ product.description|truncatewords:15|default:"Fresh and organic product from our farms." }}
+                            </p>
+                            
+                            <div class="mt-auto">
+                                <div class="mb-3">
+                                    {% if product.discount_price %}
+                                        <span class="price-original me-2">${{ product.price }}</span>
+                                        <span class="price-discount h5">${{ product.discount_price }}</span>
+                                    {% else %}
+                                        <span class="text-primary h5 fw-bold">${{ product.price }}</span>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="d-grid gap-2">
+                                    <a href="{{ product.get_add_to_cart_url }}" class="btn btn-primary">
+                                        <i class="bi bi-cart-plus me-1"></i>Add to Cart
+                                    </a>
+                                    <a href="{{ product.get_absolute_url }}" class="btn btn-outline-secondary btn-sm">
+                                        <i class="bi bi-eye me-1"></i>View Details
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12 text-center py-5">
+                    <i class="bi bi-box-seam display-1 text-muted mb-3"></i>
+                    <h4 class="text-muted">No products found</h4>
+                    <p class="text-muted">Try adjusting your filters or browse all products.</p>
+                    <a href="{% url 'core:products' %}" class="btn btn-primary">View All Products</a>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            {% if products.has_other_pages %}
+            <nav aria-label="Products pagination" class="mt-5">
+                <ul class="pagination justify-content-center">
+                    {% if products.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ products.previous_page_number }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    {% for num in products.paginator.page_range %}
+                        {% if products.number == num %}
+                            <li class="page-item active">
+                                <span class="page-link">{{ num }}</span>
+                            </li>
+                        {% elif num > products.number|add:'-3' and num < products.number|add:'3' %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ num }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}">{{ num }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if products.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ products.next_page_number }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Newsletter Section -->
+<div class="container-fluid bg-light py-5 mt-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 text-center">
+                <h4 class="mb-3">Stay Updated</h4>
+                <p class="text-muted mb-4">Get notified about new products and special offers</p>
+                <form class="d-flex">
+                    <input type="email" class="form-control me-2" placeholder="Enter your email">
+                    <button class="btn btn-primary" type="submit">Subscribe</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function filterByCategory(category) {
+    const url = new URL(window.location);
+    if (category) {
+        url.searchParams.set('category', category);
+    } else {
+        url.searchParams.delete('category');
+    }
+    url.searchParams.delete('page'); // Reset to first page
+    window.location.href = url.toString();
+}
+
+function sortProducts(sortValue) {
+    const url = new URL(window.location);
+    if (sortValue) {
+        url.searchParams.set('sort', sortValue);
+    } else {
+        url.searchParams.delete('sort');
+    }
+    url.searchParams.delete('page'); // Reset to first page
+    window.location.href = url.toString();
+}
+
+// Auto-submit price filter form on input change
+document.addEventListener('DOMContentLoaded', function() {
+    const priceInputs = document.querySelectorAll('#priceForm input[type="number"]');
+    priceInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            // Optional: Auto-submit on change
+            // document.getElementById('priceForm').submit();
+        });
+    });
+});
+</script>
+{% endblock %}

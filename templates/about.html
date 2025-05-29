@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}About Us - AgriTrade Africa{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="container-fluid bg-primary py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h1 class="display-4 text-white mb-3">About AgriTrade Africa</h1>
+                <p class="text-white lead">Connecting African Farmers to Global Markets</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="py-3">
+    <div class="container">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">About</li>
+        </ol>
+    </div>
+</nav>
+
+<!-- About Section -->
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <h2 class="mb-4">Our Story</h2>
+            <p class="lead">AgriTrade Africa was founded with a simple mission: to connect African farmers directly with consumers, ensuring fresh, organic produce reaches your table while supporting local communities.</p>
+            <p>We believe in sustainable farming practices, fair trade, and the power of technology to transform agriculture across Africa. Our platform bridges the gap between rural farmers and urban consumers, creating opportunities for economic growth and food security.</p>
+            
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-check-circle-fill text-success me-3 fs-4"></i>
+                        <div>
+                            <h6 class="mb-0">100% Organic</h6>
+                            <small class="text-muted">Chemical-free farming</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-people-fill text-primary me-3 fs-4"></i>
+                        <div>
+                            <h6 class="mb-0">Fair Trade</h6>
+                            <small class="text-muted">Supporting farmers</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <img src="{% static 'img/about-us.jpg' %}" class="img-fluid rounded" alt="About AgriTrade Africa">
+        </div>
+    </div>
+</div>
+
+<!-- Stats Section -->
+<div class="container-fluid bg-light py-5">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="bg-white p-4 rounded">
+                    <i class="bi bi-people display-4 text-primary mb-3"></i>
+                    <h3 class="text-primary">500+</h3>
+                    <p class="mb-0">Happy Customers</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="bg-white p-4 rounded">
+                    <i class="bi bi-geo-alt display-4 text-success mb-3"></i>
+                    <h3 class="text-success">50+</h3>
+                    <p class="mb-0">Partner Farms</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="bg-white p-4 rounded">
+                    <i class="bi bi-box-seam display-4 text-warning mb-3"></i>
+                    <h3 class="text-warning">1000+</h3>
+                    <p class="mb-0">Products Delivered</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="bg-white p-4 rounded">
+                    <i class="bi bi-award display-4 text-danger mb-3"></i>
+                    <h3 class="text-danger">5</h3>
+                    <p class="mb-0">Years Experience</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

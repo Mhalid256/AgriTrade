@@ -1,0 +1,125 @@
+/* AgriTrade Africa Custom Theme - Green and Orange */
+
+/* Override Bootstrap Primary Colors */
+:root {
+    --agri-green: #34AD54;
+    --agri-orange: #FF8C00;
+    --agri-dark-green: #2d8f47;
+    --agri-light-green: #4bc46a;
+    --agri-dark-orange: #e67e00;
+    --agri-light-orange: #ffb347;
+}
+
+/* Primary color overrides */
+.bg-primary {
+    background-color: var(--agri-green) !important;
+}
+
+.text-primary {
+    color: var(--agri-green) !important;
+}
+
+.btn-primary {
+    background-color: var(--agri-green);
+    border-color: var(--agri-green);
+}
+
+.btn-primary:hover {
+    background-color: var(--agri-dark-green);
+    border-color: var(--agri-dark-green);
+}
+
+/* Secondary color (Orange) */
+.bg-secondary {
+    background-color: var(--agri-orange) !important;
+}
+
+.text-secondary {
+    color: var(--agri-orange) !important;
+}
+
+.btn-secondary {
+    background-color: var(--agri-orange);
+    border-color: var(--agri-orange);
+}
+
+.btn-secondary:hover {
+    background-color: var(--agri-dark-orange);
+    border-color: var(--agri-dark-orange);
+}
+
+/* Custom AgriTrade classes */
+.bg-agri-green {
+    background-color: var(--agri-green) !important;
+}
+
+.bg-agri-orange {
+    background-color: var(--agri-orange) !important;
+}
+
+.text-agri-green {
+    color: var(--agri-green) !important;
+}
+
+.text-agri-orange {
+    color: var(--agri-orange) !important;
+}
+
+/* Navigation and header styling */
+.navbar-dark .navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.navbar-dark .navbar-nav .nav-link:hover {
+    color: var(--agri-orange);
+}
+
+.navbar-dark .navbar-nav .nav-link.active {
+    color: var(--agri-orange) !important;
+}
+
+/* Footer styling */
+.bg-footer {
+    background-color: var(--agri-green) !important;
+}
+
+/* Breadcrumb styling */
+.breadcrumb-item a {
+    color: var(--agri-green);
+    text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+    color: var(--agri-dark-green);
+}
+
+/* Stats section custom colors */
+.stats-customers {
+    color: var(--agri-green) !important;
+}
+
+.stats-farms {
+    color: var(--agri-orange) !important;
+}
+
+.stats-products {
+    color: var(--agri-dark-green) !important;
+}
+
+.stats-experience {
+    color: var(--agri-dark-orange) !important;
+}
+
+/* Card and button hover effects */
+.card:hover {
+    box-shadow: 0 4px 15px rgba(52, 173, 84, 0.2);
+}
+
+/* Link colors */
+a {
+    color: var(--agri-green);
+}
+
+a:hover {
+    color: var(--agri-dark-green);
+}
