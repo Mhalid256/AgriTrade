@@ -1,7 +1,7 @@
 import os
 from decouple import config
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+# Build paths inside the project
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -44,11 +44,12 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'allauth.account.middleware.AccountMiddleware',  # ADD THIS LINE
+    'allauth.account.middleware.AccountMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# THIS IS CRUCIAL - Make sure this line exists
 ROOT_URLCONF = 'djecommerce.urls'
 
 TEMPLATES = [
@@ -68,6 +69,7 @@ TEMPLATES = [
     },
 ]
 
+# THIS IS ALSO CRUCIAL
 WSGI_APPLICATION = 'djecommerce.wsgi.application'
 
 # Database
@@ -101,7 +103,7 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
+# Static files
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static_in_env')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
@@ -124,7 +126,7 @@ LOGIN_REDIRECT_URL = '/'
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-# Stripe (with default test values)
+# Stripe
 STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY', default='pk_test_placeholder')
 STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY', default='sk_test_placeholder')
 
