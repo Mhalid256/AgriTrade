@@ -176,7 +176,7 @@
                 <div class="product-item position-relative bg-white d-flex flex-column text-center">
                     <img class="img-fluid mb-4" src="{% static 'img/product-1.png' %}" alt="Organic Vegetable">
                     <h6 class="mb-3">Organic Vegetable</h6>
-                    <h5 class="text-primary mb-0">$19.00</h5>
+                    <h5 class="text-primary mb-0">shs19000</h5>
                     <div class="btn-action d-flex justify-content-center">
                         <a class="btn bg-primary py-2 px-3" a href="{% url 'core:products' %}"><i class="bi bi-cart text-white"></i></a>
                         <a class="btn bg-secondary py-2 px-3" a href="{% url 'core:products' %}"><i class="bi bi-eye text-white"></i></a>
@@ -224,10 +224,10 @@
                             <div class="pricing">
                                 <p class="price">
                                     {% if item.discount_price %}
-                                        <span class="mr-2 price-dc">${{ item.price }}</span>
-                                        <span class="price-sale">${{ item.discount_price }}</span>
+                                        <span class="mr-2 price-dc">shs{{ item.price }}</span>
+                                        <span class="price-sale">shs{{ item.discount_price }}</span>
                                     {% else %}
-                                        <span>${{ item.price }}</span>
+                                        <span>shs{{ item.price }}</span>
                                     {% endif %}
                                 </p>
                             </div>
@@ -274,7 +274,7 @@
                         <h3><a href="#">Bell Pepper</a></h3>
                         <div class="d-flex">
                             <div class="pricing">
-                                <p class="price"><span class="mr-2 price-dc">$120.00</span><span class="price-sale">$80.00</span></p>
+                                <p class="price"><span class="mr-2 price-dc">shs120000</span><span class="price-sale">shs80.00</span></p>
                             </div>
                         </div>
                         <div class="bottom-area d-flex px-3">

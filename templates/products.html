@@ -249,10 +249,10 @@
                             <div class="mt-auto">
                                 <div class="mb-3">
                                     {% if product.discount_price %}
-                                        <span class="price-original me-2">${{ product.price }}</span>
-                                        <span class="price-discount h5">${{ product.discount_price }}</span>
+                                        <span class="price-original me-2">shs{{ product.price }}</span>
+                                        <span class="price-discount h5">shs{{ product.discount_price }}</span>
                                     {% else %}
-                                        <span class="text-primary h5 fw-bold">${{ product.price }}</span>
+                                        <span class="text-primary h5 fw-bold">shs{{ product.price }}</span>
                                     {% endif %}
                                 </div>
                                 

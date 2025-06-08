@@ -1,10 +1,17 @@
 #!/usr/bin/env python
+"""Django's command-line utility for administrative tasks."""
 import os
 import sys
 
 if __name__ == '__main__':
-    # Use Railway settings for deployment
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'djecommerce.settings.railway')
+    # Smart settings detection
+    if 'RAILWAY_ENVIRONMENT' in os.environ:
+        # Running on Railway
+        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'djecommerce.settings.railway')
+    else:
+        # Running locally
+        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'djecommerce.settings.development')
+    
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

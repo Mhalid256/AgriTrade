@@ -186,10 +186,3 @@ def userprofile_receiver(sender, instance, created, *args, **kwargs):
 post_save.connect(userprofile_receiver, sender=settings.AUTH_USER_MODEL)
 
 
-class Item(models.Model):
-    # ... your existing fields ...
-    
-    class Meta:
-        ordering = ['-id']  # Order by newest first
-        
-    # ... rest of your model methods ...
