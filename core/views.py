@@ -13,9 +13,17 @@ from django.utils import timezone
 from django.views.generic import ListView, DetailView, View
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.contrib.auth.models import User
+from django.contrib.auth import login
 
-from .forms import CheckoutForm, CouponForm, RefundForm, PaymentForm
-from .models import Item, OrderItem, Order, Address, Payment, Coupon, Refund, UserProfile, CATEGORY_CHOICES
+from .models import Seller,Product, Order
+from .forms import SellerSignupForm
+from . import models
+
+
+
+from .forms import CheckoutForm, CouponForm, RefundForm, PaymentForm, ItemForm
+from .models import Item,OrderItem, Order, Address, Payment, Coupon, Refund, UserProfile, CATEGORY_CHOICES
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -699,3 +707,105 @@ def cart_item_count(request):
         except ObjectDoesNotExist:
             return {'cart_item_count': 0}
     return {'cart_item_count': 0}
+
+
+
+
+@login_required
+def seller_dashboard(request):
+    seller = request.user
+    items = Item.objects.filter(seller=seller)
+
+    orders = Order.objects.filter(items__item__seller=seller).order_by('-start_date')
+
+    top_items = (Order.objects
+                 .filter(items__item__seller=seller)
+                 .values('items__item__title')
+                 .annotate(total=models.Sum('items__quantity'))
+                 .order_by('-total')[:5])
+
+    customers = (Order.objects
+                 .filter(items__item__seller=seller)
+                 .values('user__username')
+                 .distinct())
+
+    context = {
+        'products': items,  # now using items instead of Product
+        'orders': orders[:5],
+        'top_products': top_items,
+        'customers': customers,
+    }
+    return render(request, 'seller-dashboard.html', context)
+
+
+
+
+def market_home(request):
+    return render(request, 'market.html')
+
+
+
+
+
+
+
+from django.contrib.auth import authenticate, login
+
+def seller_signup(request):
+    if request.method == 'POST':
+        form = SellerSignupForm(request.POST)
+        if form.is_valid():
+            user = User.objects.create_user(
+                username=form.cleaned_data['email'],
+                email=form.cleaned_data['email'],
+                password=form.cleaned_data['password'],
+                first_name=form.cleaned_data['first_name'],
+                last_name=form.cleaned_data['last_name'],
+            )
+            seller = form.save(commit=False)
+            seller.user = user
+            seller.save()
+            
+            # Authenticate the user to get the backend attribute set
+            user = authenticate(
+                username=form.cleaned_data['email'],
+                password=form.cleaned_data['password']
+            )
+            
+            if user is not None:
+                login(request, user)
+                return redirect('core:seller_dashboard')
+            else:
+                # Optional: handle authentication failure (rare in this context)
+                pass
+
+    else:
+        form = SellerSignupForm()
+    return render(request, 'seller-signup.html', {'form': form})
+
+@login_required
+def upload_product(request):
+    if request.method == 'POST':
+        title = request.POST['title']
+        price = request.POST['price']
+        image = request.FILES['image']
+        Product.objects.create(seller=request.user, title=title, price=price, image=image)
+        return redirect('core:seller_dashboard')
+
+    return render(request, 'upload_product.html')
+
+
+
+@login_required
+def upload_product(request):
+    if request.method == 'POST':
+        form = ItemForm(request.POST, request.FILES)
+        if form.is_valid():
+            item = form.save(commit=False)
+            item.seller = request.user  # If your Item model has a seller field
+            item.save()
+            return redirect('core:seller_dashboard')
+  
+    else:
+        form = ItemForm()
+    return render(request, 'upload_product.html', {'form': form})

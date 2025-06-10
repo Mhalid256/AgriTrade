@@ -1,0 +1,77 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MarketPlace - Buy & Sell Online</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="nav-brand">
+                <i class="fas fa-shopping-cart"></i>
+                <h1>MarketPlace</h1>
+            </div>
+            <nav class="nav-links">
+                <a href="{% url 'core:seller_signup' %}" class="btn btn-primary">
+                    <i class="fas fa-store"></i>
+                    Become a Seller
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h2>Welcome to Our Marketplace</h2>
+                    <p>Discover amazing products from sellers around the world, or start your own store and reach thousands of customers.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="container">
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <i class="fas fa-store"></i>
+                        <h3>Start Selling</h3>
+                        <p>Create your seller account and start listing products in minutes</p>
+                        <a href="{% url 'core:seller_signup' %}" class="btn btn-secondary">Get Started</a>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-users"></i>
+                        <h3>Reach Customers</h3>
+                        <p>Connect with thousands of potential buyers looking for your products</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-chart-line"></i>
+                        <h3>Grow Your Business</h3>
+                        <p>Use our analytics and tools to optimize your sales and grow your business</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta">
+            <div class="container">
+                <div class="cta-content">
+                    <h3>Ready to Start Selling?</h3>
+                    <p>Join thousands of successful sellers who have built their businesses on our platform. It's free to get started and takes less than 5 minutes to set up your store.</p>
+                    <div class="cta-buttons">
+                        <a href="{% url 'core:seller_signup' %}" class="btn btn-primary btn-large">
+                            <i class="fas fa-store"></i>
+                            Become a Seller
+                        </a>
+                        <a href="{% url 'core:home' %}" class="btn btn-outline btn-large">Home</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
