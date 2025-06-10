@@ -746,18 +746,23 @@ def market_home(request):
 
 
 
-
-
-
 from django.contrib.auth import authenticate, login
 
 def seller_signup(request):
     if request.method == 'POST':
         form = SellerSignupForm(request.POST)
         if form.is_valid():
+            email = form.cleaned_data['email']
+
+            # Check if the user already exists
+            if User.objects.filter(email=email).exists():
+                messages.info(request, 'This email is already registered. Please log in.')
+                return redirect('/accounts/login/')  # Replace 'login' with your login URL name
+
+            # Create the user since it doesn't exist
             user = User.objects.create_user(
-                username=form.cleaned_data['email'],
-                email=form.cleaned_data['email'],
+                username=email,
+                email=email,
                 password=form.cleaned_data['password'],
                 first_name=form.cleaned_data['first_name'],
                 last_name=form.cleaned_data['last_name'],
@@ -765,23 +770,25 @@ def seller_signup(request):
             seller = form.save(commit=False)
             seller.user = user
             seller.save()
-            
-            # Authenticate the user to get the backend attribute set
+
+            # Authenticate and log in
             user = authenticate(
-                username=form.cleaned_data['email'],
+                username=email,
                 password=form.cleaned_data['password']
             )
-            
+
             if user is not None:
                 login(request, user)
                 return redirect('core:seller_dashboard')
             else:
-                # Optional: handle authentication failure (rare in this context)
-                pass
+                messages.error(request, 'There was a problem logging you in. Please try again.')
+                return redirect('/accounts/login/')
 
     else:
         form = SellerSignupForm()
+
     return render(request, 'seller-signup.html', {'form': form})
+
 
 @login_required
 def upload_product(request):
