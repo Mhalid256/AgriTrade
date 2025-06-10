@@ -91,3 +91,5 @@ class ItemForm(forms.ModelForm):
     class Meta:
         model = Item
         fields = ['title', 'price','discount_price', 'category', 'label','slug', 'description', 'image']  # include fields relevant to your form
+
+

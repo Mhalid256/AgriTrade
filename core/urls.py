@@ -22,6 +22,8 @@ from .views import (
     seller_dashboard,
     upload_product,
     market_home,
+    edit_product,
+    delete_product,
 )
 
 app_name = 'core'
@@ -53,4 +55,9 @@ urlpatterns = [
     
     path('market/', market_home, name='market'),
     path('upload-product/', upload_product, name='upload_product'),
+
+
+
+    path('edit-product/<int:pk>/', edit_product, name='edit_product'),
+    path('delete-product/<int:pk>/', delete_product, name='delete_product'),
 ]

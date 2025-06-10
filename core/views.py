@@ -816,3 +816,25 @@ def upload_product(request):
     else:
         form = ItemForm()
     return render(request, 'upload_product.html', {'form': form})
+
+
+
+
+def edit_product(request, pk):
+    product = get_object_or_404(Item, pk=pk, seller=request.user)
+    if request.method == 'POST':
+        form = ItemForm(request.POST, request.FILES, instance=product)
+        if form.is_valid():
+            form.save()
+            return redirect('core:seller_dashboard')
+    else:
+        form = ItemForm(instance=product)
+    return render(request, 'edit_product.html', {'form': form})
+
+
+def delete_product(request, pk):
+    product = get_object_or_404(Item, pk=pk, seller=request.user)
+    if request.method == 'POST':
+        product.delete()
+        return redirect('core:seller_dashboard')
+    return render(request, 'delete_product.html', {'product': product})
